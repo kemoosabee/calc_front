@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WebCalc</title>
+
+<script type="text/javascript">
+
+let value = 0;
+let x = 0;
+let y = 0;
+let operation = '';
+
+let addURL = "http://web-add.40235226.qpc.hal.davecutting.uk/";
+let minusURL = "http://web-sub.40235226.qpc.hal.davecutting.uk/";
+let divideURL = "http://web-divide.40235226.qpc.hal.davecutting.uk/";
+let multiplyURL = "http://web-mult.40235226.qpc.hal.davecutting.uk/";
+let squareURL = "http://web-power.40235226.qpc.hal.davecutting.uk/";
+let modulusURL = "https://v9sc5h8y4b.execute-api.us-east-1.amazonaws.com/default/web-mod";
+let addURL1 = "http://web-add1.40235226.qpc.hal.davecutting.uk/";
+let minusURL1 = "http://web-sub1.40235226.qpc.hal.davecutting.uk/";
+let divideURL1 = "http://web-divide1.40235226.qpc.hal.davecutting.uk/";
+let multiplyURL1 = "http://web-mult1.40235226.qpc.hal.davecutting.uk/";
+let squareURL1 = "http://web-power1.40235226.qpc.hal.davecutting.uk/";
+let saveUrl = "http://web-save.40235226.qpc.hal.davecutting.uk/";
+
+function Display()
+{
+    document.getElementById('display').value = value;
+}
+
+function Clear()
+{
+    value = 0;
+    x = 0;
+    y = 0;
+    operation = '';
+    Display();
+}
+
+function NumClick(n)
+{
+    if (value == 0)
+        value = n;
+    else
+    {
+        value *= 10;
+        value += n;
+    }
+
+    Display();
+}
+
+function Plus()
+{
+    // if we have an outstanding operation resolve it
+    if (operation != '')
+        Equals();
+
+    x = value;
+    value = 0;
+    operation = '+';
+
+    Display();
+}
+
+function Minus()
+{
+    // if we have an outstanding operation resolve it
+    if (operation != '')
+        Equals();
+
+    x = value;
+    value = 0;
+    operation = '-';
+
+    Display();
+}
+
+function Divide() 
+{
+    if(operation!= '')
+        Equals();
+    x = value;
+    value = 0;
+    operation ='/';
+
+    Display();
+}
+
+function Square() 
+{
+    if(operation!= '')
+        Equals();
+    x = value;
+    operation ='sqr';
+
+    Display();
+}
+
+function Modulus()
+{
+    // if we have an outstanding operation resolve it
+    if (operation != '')
+        Equals();
+
+    x = value;
+    value = 0;
+    operation = '%';
+
+    Display();
+}
+
+function Multiply()
+{
+    // if we have an outstanding operation resolve it
+    if (operation != '')
+        Equals();
+
+    x = value;
+    value = 0;
+    operation = '*';
+
+    Display();
+}
+
+function GetString()
+{
+    // if we have an outstanding operation resolve it
+    if (operation != '')
+        Equals();
+
+    x = value;
+    operation = 'get';
+
+    Display();
+}
+
+function Equals()
+{
+    if (operation == '')
+        return;
+
+    y = value;
+
+    if (operation == '+')
+    {
+        let xhttp = new XMLHttpRequest();
+        let xhttp1 = new XMLHttpRequest();
+        let save = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var j = JSON.parse(this.response);
+                x=0;
+                y=0;
+                operation='';
+                value = j.answer;
+                Display();
+                // console.log(JSON.parse(this.response))
+                save.onload = function(){
+                    alert(this.response);
+                }
+                save.open("POST",saveUrl);
+                save.setRequestHeader("Content-Type", "application/json");
+                save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                save.send((this.response));
+            } else if(this.readyState == 4 && this.status !== 200)  {
+                xhttp1.onreadystatechange = function() {
+                    if(this.readyState == 4 && this.status == 200) {
+                        var j = JSON.parse(this.response);
+                        operation='';
+                        value = j.answer;
+                        Display();
+                        save.onload = function(){
+                        alert(this.response);
+                        }
+                        save.open("POST",saveUrl);
+                        save.setRequestHeader("Content-Type", "application/json");
+                        save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                        save.send((this.response));
+                    } else {
+                        value= "Both services down"
+                        Display();
+                    }
+                }
+                xhttp1.open('GET',addURL1+"?x="+x+"&y="+y,false);
+                // xhttp1.setRequestHeader("Access-Control-Allow-Headers",'*');
+                // xhttp1.setRequestHeader("Access-Control-Allow-Origin",'*');
+                xhttp1.send();
+
+                return;
+            }
+        };
+
+        xhttp.open("GET",addURL+"?x="+x+"&y="+y,false);
+        // xhttp.setRequestHeader("Access-Control-Allow-Headers",'*');
+        // xhttp.setRequestHeader("Access-Control-Allow-Origin",'*');
+        xhttp.send();
+
+        return;
+    }
+    else if (operation == '-')
+    {
+        let xhttp = new XMLHttpRequest();
+        let xhttp1 = new XMLHttpRequest();
+        let save = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var j = JSON.parse(this.response);
+                x=0;
+                y=0;
+                operation='';
+                value = j.answer;
+                Display();
+                save.onload = function(){
+                    alert(this.response);
+                }
+                save.open("POST",saveUrl);
+                save.setRequestHeader("Content-Type", "application/json");
+                save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                save.send((this.response));
+            } else if(this.readyState == 4 && this.status !== 200) {
+                xhttp1.onreadystatechange = function() {
+                    if(this.readyState == 4 && this.status == 200) {
+                        var j = JSON.parse(this.response);
+                        operation='';
+                        value = j.answer;
+                        Display();
+                        save.onload = function(){
+                        alert(this.response);
+                        }
+                        save.open("POST",saveUrl);
+                        save.setRequestHeader("Content-Type", "application/json");
+                        save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                        save.send((this.response));
+                    } else {
+                        value= "Both services down"
+                        Display();
+                    }
+                }
+                xhttp1.open('GET',minusURL1+"?x="+x+"&y="+y,false);
+                xhttp1.send();
+
+                return;
+            }
+        };
+
+        xhttp.open("GET",minusURL+"?x="+x+"&y="+y,false);
+        xhttp.send();
+
+        return;
+    }
+
+    else if (operation == '/')
+    {
+        let xhttp = new XMLHttpRequest();
+        let xhttp1 = new XMLHttpRequest();
+        let save = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var j = JSON.parse(this.response);
+                x=0;
+                y=0;
+                operation='';
+                value = j.answer;
+                Display();
+                save.onload = function(){
+                    alert(this.response);
+                }
+                save.open("POST",saveUrl);
+                save.setRequestHeader("Content-Type", "application/json");
+                save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                save.send((this.response));
+            } else if(this.readyState == 4 && this.status !== 200) {
+                xhttp1.onreadystatechange = function() {
+                    if(this.readyState == 4 && this.status == 200) {
+                        var j = JSON.parse(this.response);
+                        operation='';
+                        value = j.answer;
+                        Display();
+                        save.onload = function(){
+                        alert(this.response);
+                        }
+                        save.open("POST",saveUrl);
+                        save.setRequestHeader("Content-Type", "application/json");
+                        save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                        save.send((this.response));
+                    } else {
+                        value= "Both services down"
+                        Display();
+                    }
+                }
+                xhttp1.open('GET',divideURL1+"?x="+x+"&y="+y,false);
+                xhttp1.send();
+
+                return;
+            }
+        };
+
+        xhttp.open("GET",divideURL+"?x="+x+"&y="+y,false);
+        xhttp.send();
+
+        return;
+    }
+
+    else if (operation == 'sqr')
+    {
+        let xhttp = new XMLHttpRequest();
+        let xhttp1 = new XMLHttpRequest();
+        let save = new XMLHttpRequest();
+
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var j = JSON.parse(this.response);
+                x=0;
+                y=0;
+                operation='';
+                value = j.answer;
+                Display();
+                save.onload = function(){
+                    alert(this.response);
+                }
+                save.open("POST",saveUrl);
+                save.setRequestHeader("Content-Type", "application/json");
+                save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                save.send((this.response));
+            } else if(this.readyState == 4 && this.status !== 200) {
+                xhttp1.onreadystatechange = function() {
+                    if(this.readyState == 4 && this.status == 200) {
+                        var j = JSON.parse(this.response);
+                        operation='';
+                        value = j.answer;
+                        Display();
+                        save.onload = function(){
+                        alert(this.response);
+                        }
+                        save.open("POST",saveUrl);
+                        save.setRequestHeader("Content-Type", "application/json");
+                        save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                        save.send((this.response));
+                    } else {
+                        value= "Both services down"
+                        Display();
+                    }
+                }
+                xhttp1.open('GET',squareURL1+"?x="+x+"&y="+y,false);
+                xhttp1.send();
+
+                return;
+            }
+        };
+
+        xhttp.open("GET",squareURL+"?x="+x+"&y="+y,false);
+        xhttp.send();
+
+        return;
+    }
+
+    else if (operation == '%')
+    {
+        let xhttp = new XMLHttpRequest();
+        let save = new XMLHttpRequest();
+
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var j = JSON.parse(this.response);
+                x=0;
+                y=0;
+                operation='';
+                value = j.answer;
+                Display();
+                save.onload = function(){
+                    alert(this.response);
+                }
+                save.open("POST",saveUrl);
+                save.setRequestHeader("Content-Type", "application/json");
+                save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                save.send((this.response));
+            } else {
+                value = "Service down";
+                Display();
+            }
+        };
+
+        xhttp.open("GET",modulusURL+"?x="+x+"&y="+y);
+        xhttp.send();
+
+        return;
+    }
+
+    else if (operation == '*')
+    {
+        let xhttp = new XMLHttpRequest();
+        let xhttp1 = new XMLHttpRequest();
+        let save = new XMLHttpRequest();
+
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var j = JSON.parse(this.response);
+                x=0;
+                y=0;
+                operation='';
+                value = j.answer;
+                Display();
+                save.onload = function(){
+                    alert(this.response);
+                }
+                save.open("POST",saveUrl);
+                save.setRequestHeader("Content-Type", "application/json");
+                save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                save.send((this.response));
+            } else if(this.readyState == 4 && this.status !== 200) {
+                xhttp1.onreadystatechange = function() {
+                    if(this.readyState == 4 && this.status == 200) {
+                        var j = JSON.parse(this.response);
+                        operation='';
+                        value = j.answer;
+                        Display();
+                        save.onload = function(){
+                        alert(this.response);
+                        }
+                        save.open("POST",saveUrl);
+                        save.setRequestHeader("Content-Type", "application/json");
+                        save.setRequestHeader("Access-Control-Allow-Origin",'*');
+                        save.send((this.response));
+                    } else {
+                        value= "Both services down"
+                        Display();
+                    }
+                }
+                xhttp1.open('GET',multiplyURL1+"?x="+x+"&y="+y,false);
+                xhttp1.send();
+
+                return;
+            }
+        };
+
+        xhttp.open("GET",multiplyURL+"?x="+x+"&y="+y,false);
+        xhttp.send();
+
+        return;
+    } else if (operation == 'get')
+    {
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var j = JSON.parse(this.response);
+                x=0;
+                operation='';
+                value = j.answer.string;
+                Display();
+            } else {
+                value = "Identifier not found";
+                Display();
+            }
+        };
+
+        xhttp.open("GET",saveUrl+x);
+        xhttp.send();
+
+        return;
+    }
+}
+
+</script>
+
+<style type="text/css">
+body  {
+    font-size: 150%;
+    font-family: monospace;
+}
+
+#logo
+{
+    font-family: Calibri, sans-serif;
+    font-weight: lighter;
+    color: #505050;
+    margin: 0.5em;
+}
+
+#calculator
+{
+    text-align: center;
+    margin-top: 1em;
+}
+
+#display {
+    font-size: 100%;
+    padding: 0.2em;
+    margin: 0.2em;
+    font-family: monospace;
+    letter-spacing: 0.1em;
+}
+
+.calc1 {
+    border: solid #d0d0d0 1px;
+    background-color: #f0f0f0;
+    padding: 1.5em;
+    margin: 1em;
+}
+</style>
+
+</head>
+<body>
+<div id="calculator">
+    <div id="logo">
+        Casidave Calcutron
+    </div>
+    <div>
+        <input type="text" id="display" readonly="1" value="">
+    </div>
+    <div>
+        <button class="calc1" onclick="Clear();">C</button>
+        <button class="calc1" onclick="Multiply();">*</button>
+        <button class="calc1" onclick="Divide();">/</button>
+        <button class="calc1" onclick="Modulus();">%</button>
+    </div>
+    <div>
+        <button class="calc1" onclick="NumClick(7);">7</button>
+        <button class="calc1" onclick="NumClick(8);">8</button>
+        <button class="calc1" onclick="NumClick(9);">9</button>
+        <button class="calc1" onclick="Plus();">+</button>
+    </div>
+    <div>
+        <button class="calc1" onclick="NumClick(4);">4</button>
+        <button class="calc1" onclick="NumClick(5);">5</button>
+        <button class="calc1" onclick="NumClick(6);">6</button>
+        <button class="calc1" onclick="Minus();">-</button>
+    </div>
+    <div>
+        <button class="calc1" onclick="NumClick(1);">1</button>
+        <button class="calc1" onclick="NumClick(2);">2</button>
+        <button class="calc1" onclick="NumClick(3);">3</button>
+        <button class="calc1" onclick="Equals();">=</button>
+    </div>
+    <div>
+        <button class="calc1" onclick="NumClick(0);">0</button>
+        <button class="calc1" onclick="Square();">Sqr</button>
+        <button class="calc1" onclick="GetString();">GET</button>
+        <button class="calc1" onclick="">?</button>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+    value = 1234;
+    Display();
+</script>
+
+</html>
