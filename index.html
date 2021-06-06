@@ -145,7 +145,6 @@ function Equals()
     if (operation == '+')
     {
         let xhttp = new XMLHttpRequest();
-        let save = new XMLHttpRequest();
 
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -156,13 +155,6 @@ function Equals()
                 value = j.answer;
                 Display();
                 // console.log(JSON.parse(this.response))
-                save.onload = function(){
-                    alert(this.response);
-                }
-                save.open("POST",saveUrl);
-                save.setRequestHeader("Content-Type", "application/json");
-                save.setRequestHeader("Access-Control-Allow-Origin",'*');
-                save.send((this.response));
             } else {
                 value = "Service down";
                 Display();
