@@ -145,7 +145,6 @@ function Equals()
     if (operation == '+')
     {
         let xhttp = new XMLHttpRequest();
-        let xhttp1 = new XMLHttpRequest();
         let save = new XMLHttpRequest();
 
         xhttp.onreadystatechange = function() {
@@ -164,38 +163,17 @@ function Equals()
                 save.setRequestHeader("Content-Type", "application/json");
                 save.setRequestHeader("Access-Control-Allow-Origin",'*');
                 save.send((this.response));
-            } else if(this.readyState == 4 && this.status !== 200)  {
-                xhttp1.onreadystatechange = function() {
-                    if(this.readyState == 4 && this.status == 200) {
-                        var j = JSON.parse(this.response);
-                        operation='';
-                        value = j.answer;
-                        Display();
-                        save.onload = function(){
-                        alert(this.response);
-                        }
-                        save.open("POST",saveUrl);
-                        save.setRequestHeader("Content-Type", "application/json");
-                        save.setRequestHeader("Access-Control-Allow-Origin",'*');
-                        save.send((this.response));
-                    } else {
-                        value= "Both services down"
-                        Display();
-                    }
-                }
-                xhttp1.open('GET',addURL1+"?x="+x+"&y="+y,false);
-                // xhttp1.setRequestHeader("Access-Control-Allow-Headers",'*');
-                // xhttp1.setRequestHeader("Access-Control-Allow-Origin",'*');
-                xhttp1.send();
-
-                return;
+            } else {
+                value = "Service down";
+                Display();
             }
         };
 
         xhttp.open("GET",addURL+"?x="+x+"&y="+y,false);
-        // xhttp.setRequestHeader("Access-Control-Allow-Headers",'*');
-        // xhttp.setRequestHeader("Access-Control-Allow-Origin",'*');
+        xhttp.setRequestHeader("Access-Control-Allow-Headers",'*');
+        xhttp.setRequestHeader("Access-Control-Allow-Origin",'*');
         xhttp.send();
+        
 
         return;
     }
